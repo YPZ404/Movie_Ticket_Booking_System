@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="ShowTest" tests="13" skipped="0" failures="0" errors="0" timestamp="2021-11-25T11:21:01" hostname="zhangyupengdeMacBook-Pro.local" time="0.027">
+  <properties/>
+  <testcase name="setCastsTest()" classname="ShowTest" time="0.002"/>
+  <testcase name="idTest()" classname="ShowTest" time="0.001"/>
+  <testcase name="setDirectorTest()" classname="ShowTest" time="0.001"/>
+  <testcase name="setPriceTest()" classname="ShowTest" time="0.001"/>
+  <testcase name="setScreensizeTest()" classname="ShowTest" time="0.001"/>
+  <testcase name="setMiddleTest()" classname="ShowTest" time="0.0"/>
+  <testcase name="setTimeTest()" classname="ShowTest" time="0.001"/>
+  <testcase name="Test()" classname="ShowTest" time="0.0"/>
+  <testcase name="frontTest()" classname="ShowTest" time="0.0"/>
+  <testcase name="setRearTest()" classname="ShowTest" time="0.001"/>
+  <testcase name="setTypeTest()" classname="ShowTest" time="0.001"/>
+  <testcase name="nameTest()" classname="ShowTest" time="0.001"/>
+  <testcase name="setFilm_synopsisTest()" classname="ShowTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

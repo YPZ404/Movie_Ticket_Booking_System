@@ -1,0 +1,55 @@
+plugins {
+    id 'groovy'
+    id 'java'
+    id 'application'
+    id 'jacoco'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+application {
+    mainClassName = 'AppStarter'
+}
+
+dependencies {
+    implementation group: 'com.microsoft.sqlserver', name: 'mssql-jdbc', version: '9.4.0.jre8'
+    implementation 'org.codehaus.groovy:groovy-all:3.0.8'
+    implementation 'junit:junit:4.13.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    implementation 'com.google.guava:guava:31.0.1-jre'
+    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+}
+
+test {
+    useJUnitPlatform()
+    test.finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    reports {
+        xml {
+            enabled true // coveralls plugin depends on xml format report
+        }
+
+        html {
+            enabled true
+        }
+    }
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it,
+                    exclude: ['windows/**', 'default/AppStarter.class'])
+        }))
+    }
+}
+
+javadoc {
+    options.encoding = 'UTF-8'
+}

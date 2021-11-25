@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserSQL.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Movie</a> &gt; <a href="index.source.html" class="el_package">sql</a> &gt; <span class="el_source">UserSQL.java</span></div><h1>UserSQL.java</h1><pre class="source lang-java linenums">package sql;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+import entity.User;
+
+
+/**
+ * @Project: FIlmTicketingSystem
+ * @Date: 21/10/2021
+ * @author: zhefu wu
+ * @Description: TODO User SQL command and link
+ */
+
+<span class="fc" id="L17">public class UserSQL {</span>
+    //Determine whether the user exists and whether the password is entered correctly
+    public boolean userValidate(String Account, String pwd, int type) {
+<span class="fc" id="L20">        boolean existed = false;</span>
+<span class="fc" id="L21">        String mysql = &quot;select userAccount,Pin from users &quot;;</span>
+<span class="fc" id="L22">        mysql += &quot;where userAccount='&quot; + Account + &quot;'&quot; + &quot; and Pin='&quot; + pwd + &quot;'&quot;;</span>
+<span class="fc" id="L23">        mysql += &quot; and Authority='&quot; + type + &quot;'&quot;;</span>
+<span class="fc" id="L24">        System.out.println(mysql);</span>
+        try {
+<span class="fc" id="L26">            ResultSet rs = SQLconn.executeQuery(mysql);</span>
+            //If the user exists
+<span class="nc bnc" id="L28" title="All 2 branches missed.">            if (rs.next()) {</span>
+<span class="nc" id="L29">                existed = true;</span>
+            }
+<span class="nc" id="L31">            SQLconn.closeConnection();</span>
+<span class="nc" id="L32">        } catch (SQLException e) {</span>
+<span class="nc" id="L33">            System.out.println(&quot;An error is reported in the method of verifying the user&quot;);</span>
+<span class="nc" id="L34">        }</span>
+<span class="nc" id="L35">        return existed;</span>
+    }
+
+    //Obtain user information by user account
+    public User userQueryByAccount(String userAccount) {
+<span class="fc" id="L40">        String mysql = &quot;select * from users where userAccount='&quot; + userAccount + &quot;'&quot;;</span>
+<span class="fc" id="L41">        System.out.println(mysql);</span>
+<span class="nc" id="L42">        return getUsers(mysql).get(0);</span>
+    }
+
+    //Update user information by User ID(for administrators)
+    public boolean updateUser(String userAccount, String newpin) {
+<span class="fc" id="L47">        String mysql = &quot;update users set Pin= '&quot;+ newpin +&quot;'&quot; + &quot;where userAccount = '&quot;+userAccount+ &quot;'&quot;;</span>
+<span class="fc" id="L48">        System.out.println(mysql);</span>
+<span class="fc" id="L49">        int r = SQLconn.executeUpdate(mysql);</span>
+<span class="pc bpc" id="L50" title="1 of 2 branches missed.">        return r != 0;</span>
+    }
+
+
+    //Query whether the user exists, if it does not exist, return false
+    public boolean userExisted(String userAccount) {
+<span class="fc" id="L56">        String mysql = &quot;select * from users where userAccount='&quot; + userAccount + &quot;'&quot;;</span>
+<span class="fc" id="L57">        System.out.println(mysql);</span>
+<span class="fc" id="L58">        Object obj = SQLconn.executeSingleQuery(mysql);</span>
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">        return obj != null;</span>
+    }
+
+    //Register user information, return whether the registration is successful
+    public boolean register(String UserAccount, String password, String name) {
+<span class="fc" id="L64">        String mysql = &quot;insert into users values('&quot; + UserAccount + &quot;','&quot; + password + &quot;','&quot; + name + &quot;',Default,Default,Default);&quot;;</span>
+<span class="fc" id="L65">        System.out.println(mysql);</span>
+        //0 means insertion failed
+<span class="fc" id="L67">        int rs = 0;</span>
+        try {
+            //If the update is successful, rs=1
+<span class="fc" id="L70">            rs = SQLconn.executeUpdate(mysql);</span>
+<span class="nc" id="L71">        } catch (Exception e) {</span>
+<span class="nc" id="L72">            System.out.println(&quot;An error was reported in the registered user information error&quot;);</span>
+<span class="fc" id="L73">        }</span>
+<span class="pc bpc" id="L74" title="1 of 2 branches missed.">        return rs != 0;</span>
+    }
+    //Get user information array list
+    private ArrayList&lt;User&gt; getUsers(String mysql) {
+<span class="fc" id="L78">        ArrayList&lt;User&gt; users = new ArrayList&lt;&gt;();</span>
+        try {
+<span class="fc" id="L80">            ResultSet rs = SQLconn.executeQuery(mysql);</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">            while (rs.next()) {</span>
+<span class="nc" id="L82">                User user = new User();</span>
+<span class="nc" id="L83">                user.setUserID(rs.getString(1));</span>
+<span class="nc" id="L84">                user.setAccount(rs.getString(2));</span>
+<span class="nc" id="L85">                user.setPin(rs.getString(3));</span>
+<span class="nc" id="L86">                user.setUsername(rs.getString(4));</span>
+<span class="nc" id="L87">                user.setAuthority(rs.getInt(5));</span>
+<span class="nc" id="L88">                user.setCardnumber(rs.getString(6));</span>
+<span class="nc" id="L89">                user.setCardname(rs.getString(7));</span>
+<span class="nc" id="L90">                users.add(user);</span>
+<span class="nc" id="L91">            }</span>
+<span class="nc" id="L92">            SQLconn.closeConnection();</span>
+<span class="nc" id="L93">        } catch (SQLException e) {</span>
+<span class="nc" id="L94">            System.out.println(&quot;An error was reported in the method of obtaining the user array list&quot;);</span>
+<span class="nc" id="L95">        }</span>
+<span class="nc" id="L96">        return users;</span>
+    }
+    public Object[][] userhisselection(String userid,String name,String time){
+<span class="fc" id="L99">        String sql1 = &quot;select show_id,film_name,screensize,location_name,film_classification,show_release,purchaseprice,tickets\n&quot; +</span>
+                &quot;from booking b INNER JOIN show on show.show_id = b.Showid INNER JOIN film f on show.film_id = f.film_id INNER JOIN location l on show.Location_id = l.location_id &quot; +
+                &quot;where userId = &quot; + userid ;
+
+<span class="fc" id="L103">        String sql2 = &quot;and UPPER (film_name) LIKE UPPER('%&quot; + name +&quot;%')&quot;;</span>
+<span class="fc" id="L104">        String sql6 = &quot; and show_release = '&quot; + time + &quot;'&quot;;</span>
+
+<span class="pc bpc" id="L106" title="1 of 2 branches missed.">        if (time.equals(&quot;&quot;)){sql6 = &quot; and 1=1&quot;;}</span>
+
+<span class="nc" id="L108">        return gethislist(sql1+sql2+sql6);</span>
+    }
+
+    public Object[][] gethislist(String mysql){
+<span class="fc" id="L112">        Object[][] films =  new Object[50][9];</span>
+
+        try {
+<span class="fc" id="L115">            ResultSet rs = SQLconn.executeQuery(mysql);</span>
+<span class="fc" id="L116">            int i = 0;</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">            while (rs.next()) {</span>
+<span class="nc" id="L118">                films[i][0] = rs.getString(1);</span>
+<span class="nc" id="L119">                films[i][1] = rs.getString(2);</span>
+<span class="nc" id="L120">                films[i][2] = rs.getString(3);</span>
+<span class="nc" id="L121">                films[i][3] = rs.getString(4);</span>
+<span class="nc" id="L122">                films[i][4] = rs.getString(5);</span>
+<span class="nc" id="L123">                films[i][5] = rs.getString(6);</span>
+<span class="nc" id="L124">                films[i][6] = rs.getString(7);</span>
+<span class="nc" id="L125">                films[i][7] = rs.getString(8);</span>
+<span class="nc" id="L126">                i ++;</span>
+            }
+<span class="nc" id="L128">            SQLconn.closeConnection();</span>
+
+<span class="nc" id="L130">        }catch (SQLException e) {</span>
+<span class="nc" id="L131">            System.out.println(&quot;An error raise in history table&quot;);</span>
+<span class="nc" id="L132">        }</span>
+<span class="nc" id="L133">        return films;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

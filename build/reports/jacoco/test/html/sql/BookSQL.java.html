@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BookSQL.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Movie</a> &gt; <a href="index.source.html" class="el_package">sql</a> &gt; <span class="el_source">BookSQL.java</span></div><h1>BookSQL.java</h1><pre class="source lang-java linenums">package sql;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+<span class="fc" id="L6">public class BookSQL {</span>
+
+    public boolean insertIntoBook(String userID, String ShowID, int tickets, float purchasePrice, int purchasedFront, int purchasedMid, int purchasedRare) {
+<span class="fc" id="L9">        String sql = &quot;INSERT INTO booking (userid, showid, tickets, purchaseprice, purchasedfront, purchasedmid, purchasedrare)\n&quot; +</span>
+                &quot;VALUES ('&quot;+ userID +&quot;', '&quot;+ ShowID +&quot;', '&quot;+ tickets +&quot;', '&quot;+ purchasePrice +&quot;', '&quot;+ purchasedFront +&quot;', '&quot;+ purchasedMid +&quot;', '&quot;+ purchasedRare +&quot;');&quot;;
+<span class="fc" id="L11">        System.out.println(sql);</span>
+        try {
+<span class="fc" id="L13">            int r = SQLconn.executeUpdate(sql);</span>
+<span class="pc bpc" id="L14" title="1 of 2 branches missed.">            return r != 0;</span>
+<span class="nc" id="L15">        } catch (Exception e) {</span>
+<span class="nc" id="L16">            System.out.println(&quot;An error was reported in the insertion process&quot;);</span>
+        }
+<span class="nc" id="L18">        return false;</span>
+    }
+
+    public Object[][] userhisselection(String userid, String name, String time) {
+<span class="fc" id="L22">        String sql1 = &quot;select book_id,show_id,film_name,screensize,location_name,film_classification,show_release,purchaseprice,tickets,front,middle,rear\n\n&quot; +</span>
+                &quot;from booking b INNER JOIN show on show.show_id = b.Showid INNER JOIN film f on show.film_id = f.film_id INNER JOIN location l on show.Location_id = l.location_id &quot; +
+                &quot;where userId = &quot; + userid;
+
+<span class="fc" id="L26">        String sql2 = &quot;and UPPER (film_name) LIKE UPPER('%&quot; + name + &quot;%')&quot;;</span>
+<span class="fc" id="L27">        String sql6 = &quot; and show_release = '&quot; + time + &quot;'&quot;;</span>
+
+<span class="pc bpc" id="L29" title="1 of 2 branches missed.">        if (time.equals(&quot;&quot;)) {</span>
+<span class="fc" id="L30">            sql6 = &quot; and 1=1&quot;;</span>
+        }
+
+<span class="nc" id="L33">        return gethislist(sql1 + sql2 + sql6);</span>
+    }
+
+    public Object[][] gethislist(String mysql) {
+<span class="fc" id="L37">        Object[][] films = new Object[50][13];</span>
+
+        try {
+<span class="fc" id="L40">            ResultSet rs = SQLconn.executeQuery(mysql);</span>
+<span class="fc" id="L41">            int i = 0;</span>
+<span class="nc bnc" id="L42" title="All 2 branches missed.">            while (rs.next()) {</span>
+<span class="nc" id="L43">                films[i][0] = rs.getString(1);</span>
+<span class="nc" id="L44">                films[i][1] = rs.getString(2);</span>
+<span class="nc" id="L45">                films[i][2] = rs.getString(3);</span>
+<span class="nc" id="L46">                films[i][3] = rs.getString(4);</span>
+<span class="nc" id="L47">                films[i][4] = rs.getString(5);</span>
+<span class="nc" id="L48">                films[i][5] = rs.getString(6);</span>
+<span class="nc" id="L49">                films[i][6] = rs.getString(7);</span>
+<span class="nc" id="L50">                films[i][7] = rs.getString(8);</span>
+<span class="nc" id="L51">                films[i][8] = rs.getString(9);</span>
+<span class="nc" id="L52">                films[i][9] = rs.getString(10);</span>
+<span class="nc" id="L53">                films[i][10] = rs.getString(11);</span>
+<span class="nc" id="L54">                films[i][11] = rs.getString(12);</span>
+<span class="nc" id="L55">                i++;</span>
+            }
+<span class="nc" id="L57">            SQLconn.closeConnection();</span>
+
+<span class="nc" id="L59">        } catch (SQLException e) {</span>
+<span class="nc" id="L60">            System.out.println(&quot;An error raise in history table&quot;);</span>
+<span class="nc" id="L61">        }</span>
+<span class="nc" id="L62">        return films;</span>
+    }
+
+    public void drophis(String bookid) {
+<span class="nc" id="L66">        String sql = &quot;DELETE FROM booking WHERE book_id = '&quot; + bookid + &quot;'&quot;;</span>
+<span class="nc" id="L67">        SQLconn.executeQuery(sql);</span>
+<span class="nc" id="L68">        SQLconn.closeConnection();</span>
+<span class="nc" id="L69">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

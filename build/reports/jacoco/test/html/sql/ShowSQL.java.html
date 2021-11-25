@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ShowSQL.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Movie</a> &gt; <a href="index.source.html" class="el_package">sql</a> &gt; <span class="el_source">ShowSQL.java</span></div><h1>ShowSQL.java</h1><pre class="source lang-java linenums">package sql;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+<span class="fc" id="L6">public class ShowSQL {</span>
+
+    public Object[][] usershowselection(String name,String filmtype, String screensize, String location, String time){
+<span class="fc" id="L9">        String sql1 = &quot;select show_id,film_name,screensize,location_name,film_classification,show_release,price,front,middle,rear,director,casts,film_synopsis\n&quot; +</span>
+                &quot;from show INNER JOIN film f on show.film_id = f.film_id INNER JOIN location l on show.Location_id = l.location_id &quot; ;
+
+<span class="fc" id="L12">        String sql2 = &quot;where UPPER (film_name) LIKE UPPER('%&quot; + name +&quot;%')&quot;;</span>
+<span class="fc" id="L13">        String sql3 = &quot; and film_classification = '&quot; + filmtype + &quot;'&quot;;</span>
+<span class="fc" id="L14">        String sql4 = &quot; and screensize = '&quot; + screensize + &quot;'&quot;;</span>
+<span class="fc" id="L15">        String sql5 = &quot; and location_name = '&quot; + location + &quot;'&quot;;</span>
+<span class="fc" id="L16">        String sql6 = &quot; and show_release = '&quot; + time + &quot;'&quot;;</span>
+
+<span class="pc bpc" id="L18" title="1 of 2 branches missed.">        if (name == null){sql2 = &quot;where 1=1&quot;;}</span>
+<span class="pc bpc" id="L19" title="1 of 2 branches missed.">        if (filmtype.equals(&quot;all&quot;)){sql3 = &quot; and 1=1&quot;;}</span>
+<span class="pc bpc" id="L20" title="1 of 2 branches missed.">        if (screensize.equals(&quot;all&quot;)){sql4 = &quot; and 1=1&quot;;}</span>
+<span class="pc bpc" id="L21" title="1 of 2 branches missed.">        if (location.equals(&quot;all&quot;)){sql5 = &quot; and 1=1&quot;;}</span>
+<span class="pc bpc" id="L22" title="1 of 2 branches missed.">        if (time.equals(&quot;&quot;)){sql6 = &quot; and 1=1&quot;;}</span>
+
+<span class="fc" id="L24">        String mysql = sql1+sql2+sql3+sql4+sql5+sql6;</span>
+<span class="fc" id="L25">        System.out.println(mysql);</span>
+
+<span class="nc" id="L27">        return getshowlist(sql1+sql2+sql3+sql4+sql5+sql6);</span>
+    }
+
+    public Object[][] getshowlist(String mysql){
+<span class="fc" id="L31">        Object[][] films =  new Object[50][13];</span>
+
+        try {
+<span class="fc" id="L34">            ResultSet rs = SQLconn.executeQuery(mysql);</span>
+<span class="fc" id="L35">            int i = 0;</span>
+<span class="nc bnc" id="L36" title="All 2 branches missed.">            while (rs.next()) {</span>
+<span class="nc" id="L37">                films[i][0] = rs.getString(1);</span>
+<span class="nc" id="L38">                films[i][1] = rs.getString(2);</span>
+<span class="nc" id="L39">                films[i][2] = rs.getString(3);</span>
+<span class="nc" id="L40">                films[i][3] = rs.getString(4);</span>
+<span class="nc" id="L41">                films[i][4] = rs.getString(5);</span>
+<span class="nc" id="L42">                films[i][5] = rs.getString(6);</span>
+<span class="nc" id="L43">                films[i][6] = rs.getString(7);</span>
+<span class="nc" id="L44">                films[i][7] = rs.getString(8);</span>
+<span class="nc" id="L45">                films[i][8] = rs.getString(9);</span>
+<span class="nc" id="L46">                films[i][9] = rs.getString(10);</span>
+<span class="nc" id="L47">                films[i][10] = rs.getString(11);</span>
+<span class="nc" id="L48">                films[i][11] = rs.getString(12);</span>
+<span class="nc" id="L49">                films[i][12] = rs.getString(13);</span>
+<span class="nc" id="L50">                i ++;</span>
+            }
+<span class="nc" id="L52">            SQLconn.closeConnection();</span>
+
+<span class="nc" id="L54">        }catch (SQLException e) {</span>
+<span class="nc" id="L55">            System.out.println(&quot;An error&quot;);</span>
+<span class="nc" id="L56">        }</span>
+<span class="nc" id="L57">        return films;</span>
+    }
+
+    public boolean insertShow(String film_id, String location_id, String screenSize, String release, String front, String middle, String rear, String price) {
+<span class="fc" id="L61">        String mysql = &quot;INSERT INTO show\n VALUES('&quot; + film_id + &quot;','&quot; + location_id + &quot;','&quot; + screenSize + &quot;','&quot; + release + &quot;','&quot; + front + &quot;','&quot; + middle + &quot;','&quot; + rear + &quot;','&quot; + price + &quot;')&quot;;</span>
+<span class="fc" id="L62">        System.out.println(mysql);</span>
+<span class="fc" id="L63">        int r = SQLconn.executeUpdate(mysql);</span>
+<span class="pc bpc" id="L64" title="1 of 2 branches missed.">        return r != 0;</span>
+    }
+
+    public boolean seatupdate(String showID, int front, int mid, int rear){
+<span class="fc" id="L68">        String sql = &quot;UPDATE show set front=&quot; +front+ &quot;, middle =&quot;+mid+&quot;, rear=&quot; + rear +</span>
+                &quot;where show_id=&quot; +  showID;
+<span class="fc" id="L70">        int r  = SQLconn.executeUpdate(sql);</span>
+<span class="fc" id="L71">        SQLconn.closeConnection();</span>
+<span class="pc bpc" id="L72" title="1 of 2 branches missed.">        return r != 0;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
